@@ -1,5 +1,8 @@
 package com.madejekz.hfdesignpatt;
 
+import java.util.Observable;
+import java.util.Observer;
+
 /**
  * Created by madejekz on 7/23/2018.
  */
@@ -8,25 +11,28 @@ public class StatisticsDisplay implements Observer, DisplayElement{
     private float minTemp = 200;
     private float tempSum = 0.0f;
     private int numReadings;
-    private WeatherData weatherData;
+    private Observable observable;
 
-    public StatisticsDisplay(WeatherData weatherData) {
-        this.weatherData = weatherData;
-        weatherData.registerObserver(this);
+    public StatisticsDisplay(Observable observable) {
+        this.observable = observable;
+        observable.addObserver(this);
     }
 
     @Override
-    public void update(float temp, float humidity, float pressure) {
-        tempSum += temp;
-        numReadings++;
+    public void update(Observable o, Object arg) {
+        if (o instanceof WeatherData) {
+            WeatherData weatherData = (WeatherData) o;
+            tempSum += weatherData.getTemperature();
+            numReadings++;
 
-        if (temp > maxTemp)
-            maxTemp = temp;
+            if (weatherData.getTemperature() > maxTemp)
+                maxTemp = weatherData.getTemperature();
 
-        if (temp < minTemp)
-            minTemp = temp;
+            if (weatherData.getTemperature() < minTemp)
+                minTemp = weatherData.getTemperature();
 
-        display();
+            display();
+        }
     }
 
     @Override

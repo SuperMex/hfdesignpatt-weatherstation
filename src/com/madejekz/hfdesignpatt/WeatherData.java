@@ -1,38 +1,21 @@
 package com.madejekz.hfdesignpatt;
 
 import java.util.ArrayList;
+import java.util.Observable;
 
 /**
  * Created by madejekz on 7/23/2018.
  */
-public class WeatherData implements Subject {
+public class WeatherData extends Observable {
     private ArrayList<Observer> observers;
     private float temperature;
     private float humidity;
     private float pressure;
 
-    public WeatherData() {
-        observers = new ArrayList<>();
-    }
-
-    public void registerObserver(Observer o) {
-        observers.add(o);
-    }
-
-    public void removeObserver(Observer o) {
-        int i = observers.indexOf(o);
-        if (i >= 0) {
-            observers.remove(i);
-        }
-    }
-
-    public void notifyObservers() {
-        for (Observer observer : observers) {
-            observer.update(temperature, humidity, pressure);
-        }
-    }
+    public WeatherData() {}
 
     public void measurementsChanged() {
+        setChanged();
         notifyObservers();
     }
 
@@ -41,5 +24,17 @@ public class WeatherData implements Subject {
         this.humidity = humidity;
         this.pressure = pressure;
         measurementsChanged();
+    }
+
+    public float getTemperature() {
+        return temperature;
+    }
+
+    public float getHumidity() {
+        return humidity;
+    }
+
+    public float getPressure() {
+        return pressure;
     }
 }
